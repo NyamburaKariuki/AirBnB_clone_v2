@@ -9,7 +9,8 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
+        """Returns a list of objects of one type of class.
+        """
         if cls is None:
             return FileStorage.__objects
         return {
@@ -32,13 +33,13 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
-        from models.base_model import BaseModel
-        from models.user import User
-        from models.place import Place
-        from models.state import State
-        from models.city import City
         from models.amenity import Amenity
+        from models.base_model import BaseModel
+        from models.city import City
+        from models.place import Place
         from models.review import Review
+        from models.state import State
+        from models.user import User
 
         classes = {
                     'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -54,9 +55,16 @@ class FileStorage:
         except FileNotFoundError:
             pass
 
-        def delete(self, obj=None):
-            """delete obj from objects"""
-            if obj in self.__objects.values():
-                key = "{}.{}".format(type(obj).__name__, obj.id)
-                del (self.__objects[key])
-            return
+    def delete(self, obj=None):
+        """Delete obj from __objects
+
+        """
+        if obj in self.__objects.values():
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            del(self.__objects[key])
+        return
+
+    def close(self):
+        """Calls reload method for deserializing the JSON file to objects
+        """
+        self.reload()
