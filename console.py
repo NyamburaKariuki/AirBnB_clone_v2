@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
-import shlex
-from os import environ
 import sys
 from models.base_model import BaseModel
 from models.__init__ import storage
@@ -12,6 +10,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+import shlex
+from os import environ
 
 classes = {
             'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -125,17 +125,17 @@ class HBNBCommand(cmd.Cmd):
         try:
             if not args:
                 raise SyntaxError()
-            mylist = args.split(" ")
-            obj = eval("{}()".format(mylist[0]))
-            for attr in mylist[1:]:
+            my_list = args.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            for attr in my_list[1:]:
                 my_att = attr.split('=')
                 try:
-                    new = HBNBCommand.verify_attribute(my_att[1])
+                    casted = HBNBCommand.verify_attribute(my_att[1])
                 except Exception:
                     continue
-                if not new:
+                if not casted:
                     continue
-                setattr(obj, my_att[0], new)
+                setattr(obj, my_att[0], casted)
             obj.save()
             print("{}".format(obj.id))
         except SyntaxError:
@@ -314,22 +314,23 @@ class HBNBCommand(cmd.Cmd):
 
         # iterate through attr names and values
         for i, att_name in enumerate(args):
-
+            # block only runs on even iterations
             if (i % 2 == 0):
-                att_val = args[i + 1]
-                if not att_name:
+                att_val = args[i + 1]  # following item is value
+                if not att_name:  # check for att_name
                     print("** attribute name missing **")
                     return
-                if not att_val:
+                if not att_val:  # check for att_value
                     print("** value missing **")
                     return
-
+                # type cast as necessary
                 if att_name in HBNBCommand.types:
                     att_val = HBNBCommand.types[att_name](att_val)
 
+                # update dictionary with name, value pair
                 new_dict.__dict__.update({att_name: att_val})
 
-        new_dict.save()
+        new_dict.save()  # save updates to file
 
     def help_update(self):
         """ Help information for the update class """
@@ -339,6 +340,12 @@ class HBNBCommand(cmd.Cmd):
     @classmethod
     def verify_attribute(cls, attribute):
         """verifies that an attribute is correctly formatted
+
+        Args:
+            attribute (any): attribute to be verified.
+
+        Returns:
+            any: attribute.
         """
         if attribute[0] is attribute[-1] is '"':
             for i, c in enumerate(attribute[1:-1]):
