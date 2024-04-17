@@ -4,6 +4,7 @@ from models.base_model import BaseModel
 import unittest
 import datetime
 from uuid import UUID
+import pep8
 import json
 import os
 
@@ -97,3 +98,8 @@ class test_basemodel(unittest.TestCase):
         n = new.to_dict()
         new = BaseModel(**n)
         self.assertFalse(new.created_at == new.updated_at)
+
+   def test_pep8(self):
+        """Check pep8 styling"""
+        p = pep8.StyleGuide(quiet=True).check_files(["models/user.py"])
+        self.assertEqual(p.total_errors, 0) 

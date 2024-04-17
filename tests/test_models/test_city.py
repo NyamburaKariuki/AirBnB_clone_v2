@@ -2,6 +2,7 @@
 """ """
 from tests.test_models.test_base_model import test_basemodel
 from models.city import City
+import pep8
 
 
 class test_City(test_basemodel):
@@ -22,3 +23,8 @@ class test_City(test_basemodel):
         """ """
         new = self.value()
         self.assertEqual(type(new.name), str)
+
+def test_pep8(self):
+        """Check pep8 styling"""
+        p = pep8.StyleGuide(quiet=True).check_files(["models/city.py"])
+        self.assertEqual(p.total_errors, 0)

@@ -2,7 +2,7 @@
 """ """
 from tests.test_models.test_base_model import test_basemodel
 from models.review import Review
-
+import pep8
 
 class test_review(test_basemodel):
     """ """
@@ -27,3 +27,8 @@ class test_review(test_basemodel):
         """ """
         new = self.value()
         self.assertEqual(type(new.text), str)
+
+	def test_pep8(self):
+        """Check pep8 styling"""
+        p = pep8.StyleGuide(quiet=True).check_files(["models/review.py"])
+        self.assertEqual(p.total_errors, 0)
